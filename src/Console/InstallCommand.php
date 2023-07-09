@@ -394,7 +394,7 @@ EOF;
         if( $this->argument('design') == 'bootstrap' ){
 
             (new Filesystem)->ensureDirectoryExists(base_path('resources/scss'));
-            copy(__DIR__.'/../../stubs/inertia-bootstrap/resources/scss/app.scss', base_path('resources/scss/app.scss'));
+            (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-bootstrap/resources/scss', base_path('resources/scss'));
             copy(__DIR__.'/../../stubs/inertia-bootstrap/postcss.config.js', base_path('postcss.config.js'));
             copy(__DIR__.'/../../stubs/inertia-bootstrap/vite.config.js', base_path('vite.config.js'));
 
