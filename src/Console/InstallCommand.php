@@ -359,8 +359,6 @@ EOF;
             ] + $packages;
         });
 
-        }
-
         // Sanctum...
         (new Process([$this->phpBinary(), 'artisan', 'vendor:publish', '--provider=Laravel\Sanctum\SanctumServiceProvider', '--force'], base_path()))
                 ->setTimeout(null)
