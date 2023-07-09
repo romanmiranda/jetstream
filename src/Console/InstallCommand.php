@@ -355,7 +355,7 @@ EOF;
                     '@vitejs/plugin-vue' => '^4.0.0',
                     'autoprefixer' => '^10.4.7',
                     'postcss' => '^8.4.14',
-                    'bootstrap' => '^3.1.0',
+                    'bootstrap' => '^5.2.3',
                     'sass' => '^1.63.6',
                     'vue' => '^3.2.31',
                 ] + $packages;
@@ -363,7 +363,7 @@ EOF;
 
             $this->updateNodePackages(function($packages){
                 return [
-                    '@popperjs/core' => '2.11.8',
+                    '@popperjs/core' => '^2.11.8',
                 ] + $packages;
             },false);
 
