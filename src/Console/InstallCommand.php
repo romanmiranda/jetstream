@@ -368,9 +368,9 @@ EOF;
 
         // Bootstrap Configuration...
         (new Filesystem)->ensureDirectoryExists(base_path('resources/scss'));
-        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia-bootstrap/resources/scss', base_path('resources/scss'));
-        copy(__DIR__.'/../../stubs/inertia-bootstrap/postcss.config.js', base_path('postcss.config.js'));
-        copy(__DIR__.'/../../stubs/inertia-bootstrap/vite.config.js', base_path('vite.config.js'));
+        (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/inertia/resources/scss', base_path('resources/scss'));
+        copy(__DIR__.'/../../stubs/inertia/postcss.config.js', base_path('postcss.config.js'));
+        copy(__DIR__.'/../../stubs/inertia/vite.config.js', base_path('vite.config.js'));
 
         // jsconfig.json...
         copy(__DIR__.'/../../stubs/inertia/jsconfig.json', base_path('jsconfig.json'));
