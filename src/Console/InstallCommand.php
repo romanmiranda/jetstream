@@ -19,6 +19,7 @@ class InstallCommand extends Command
      * @var string
      */
     protected $signature = 'jetstream:install {stack : The development stack that should be installed (inertia,livewire)}
+                                              {design? : The style library to be used (tailwind,bootstrap)}
                                               {--dark : Indicate that dark mode support should be installed}
                                               {--teams : Indicates if team support should be installed}
                                               {--api : Indicates if API support should be installed}
@@ -41,7 +42,7 @@ class InstallCommand extends Command
      */
     public function handle()
     {
-        if (! in_array($this->argument('stack'), ['inertia', 'livewire'])) {
+        if (! in_array($this->argument('stack'), ['inertia', 'livewire','inertia','livewire'])) {
             $this->components->error('Invalid stack. Supported stacks are [inertia] and [livewire].');
 
             return 1;
@@ -346,18 +347,42 @@ EOF;
         }
 
         // Install NPM packages...
-        $this->updateNodePackages(function ($packages) {
-            return [
-                '@inertiajs/vue3' => '^1.0.0',
-                '@tailwindcss/forms' => '^0.5.2',
-                '@tailwindcss/typography' => '^0.5.2',
-                '@vitejs/plugin-vue' => '^4.0.0',
-                'autoprefixer' => '^10.4.7',
-                'postcss' => '^8.4.14',
-                'tailwindcss' => '^3.1.0',
-                'vue' => '^3.2.31',
-            ] + $packages;
-        });
+        if( $this->argument('design') == 'bootstrap' ){
+
+            $this->updateNodePackages(function ($packages) {
+                return [
+                    '@inertiajs/vue3' => '^1.0.0',
+                    '@vitejs/plugin-vue' => '^4.0.0',
+                    'autoprefixer' => '^10.4.7',
+                    'postcss' => '^8.4.14',
+                    'bootstrap' => '^3.1.0',
+                    'sass' => '^1.63.6',
+                    'vue' => '^3.2.31',
+                ] + $packages;
+            });
+
+            $this->updateNodePackages(function($packages){
+                return [
+                    '@popperjs/core' => '2.11.8',
+                ] + $packages;
+            },false);
+
+        }else{
+
+            $this->updateNodePackages(function ($packages) {
+                return [
+                    '@inertiajs/vue3' => '^1.0.0',
+                    '@tailwindcss/forms' => '^0.5.2',
+                    '@tailwindcss/typography' => '^0.5.2',
+                    '@vitejs/plugin-vue' => '^4.0.0',
+                    'autoprefixer' => '^10.4.7',
+                    'postcss' => '^8.4.14',
+                    'tailwindcss' => '^3.1.0',
+                    'vue' => '^3.2.31',
+                ] + $packages;
+            });
+
+        }
 
         // Sanctum...
         (new Process([$this->phpBinary(), 'artisan', 'vendor:publish', '--provider=Laravel\Sanctum\SanctumServiceProvider', '--force'], base_path()))
@@ -366,13 +391,25 @@ EOF;
                     $this->output->write($output);
                 });
 
-        // Tailwind Configuration...
-        copy(__DIR__.'/../../stubs/inertia/tailwind.config.js', base_path('tailwind.config.js'));
-        copy(__DIR__.'/../../stubs/inertia/postcss.config.js', base_path('postcss.config.js'));
-        copy(__DIR__.'/../../stubs/inertia/vite.config.js', base_path('vite.config.js'));
+        if( $this->argument('design') == 'bootstrap' ){
 
-        // jsconfig.json...
-        copy(__DIR__.'/../../stubs/inertia/jsconfig.json', base_path('jsconfig.json'));
+            (new Filesystem)->ensureDirectoryExists(base_path('resources/scss'));
+            copy(__DIR__.'/../../stubs/inertia-bootstrap/resources/scss/app.scss', base_path('resources/scss/app.scss'));
+            copy(__DIR__.'/../../stubs/inertia-bootstrap/postcss.config.js', base_path('postcss.config.js'));
+            copy(__DIR__.'/../../stubs/inertia-bootstrap/vite.config.js', base_path('vite.config.js'));
+
+            // jsconfig.json...
+            copy(__DIR__.'/../../stubs/inertia/jsconfig.json', base_path('jsconfig.json'));
+
+        }else{
+            // Tailwind Configuration...
+            copy(__DIR__.'/../../stubs/inertia/tailwind.config.js', base_path('tailwind.config.js'));
+            copy(__DIR__.'/../../stubs/inertia/postcss.config.js', base_path('postcss.config.js'));
+            copy(__DIR__.'/../../stubs/inertia/vite.config.js', base_path('vite.config.js'));
+
+            // jsconfig.json...
+            copy(__DIR__.'/../../stubs/inertia/jsconfig.json', base_path('jsconfig.json'));            
+        }
 
         // Directories...
         (new Filesystem)->ensureDirectoryExists(app_path('Actions/Fortify'));
